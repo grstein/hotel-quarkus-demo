@@ -1,3 +1,12 @@
+## Stage 1 : build with maven builder image with native capabilities
+#FROM maven:3.8.2-adoptopenjdk-8 AS build
+#COPY pom.xml /build/
+#WORKDIR /build
+#RUN mvn dependency:copy-dependencies
+#COPY src /build/src
+#RUN mvn install
+#RUN mvn package -DskipTests
+
 ####
 # This Dockerfile is used in order to build a container that runs the Quarkus application in JVM mode
 #
@@ -14,6 +23,14 @@
 # docker run -i --rm -p 8080:8080 quarkus/hibernate-orm-panache-resteasy-jvm
 #
 ###
+#FROM adoptopenjdk:8-jre-openj9
+#ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+#ENV AB_ENABLED=jmx_exporter
+#COPY target/lib/* /deployments/lib/
+#COPY --from=build /build/target/*-runner /app/app.jar
+#ENTRYPOINT [ "/app/run-java.sh" ]
+
+### ORIGINAL ###
 FROM fabric8/java-alpine-openjdk8-jre
 ENV JAVA_OPTIONS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV AB_ENABLED=jmx_exporter

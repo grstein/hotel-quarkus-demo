@@ -1,0 +1,28 @@
+version: '3.6'
+
+services:
+  frontend:
+    image: vue:0.1
+    ports: 
+      - 80:80
+    depends_on:
+      - backend
+
+  backend:
+    image: quarkus-jvm:0.1
+    ports: 
+      - 8080:8080
+    depends_on:
+      - db
+    
+  db:
+    image: postgres:10.5
+    environment: 
+      - DATABASE_HOST=127.0.0.1
+      - POSTGRES_USER=quarkus_test 
+      - POSTGRES_PASSWORD=quarkus_test 
+      - POSTGRES_DB=quarkus_test
+    volumes:
+      - ${PWD}/src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
+    expose:
+      - 5432
